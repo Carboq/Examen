@@ -1,0 +1,37 @@
+enable
+configure terminal
+hostname R2
+no ip domain-lookup
+!
+! --- LAN Red {{LAN3_ID}} ---
+interface GigabitEthernet0/0
+ description LAN Red {{LAN3_ID}}
+ ip address {{LAN3_IP}} {{LAN3_MASK}}
+ ip helper-address {{SRV_IP}}
+ no shutdown
+ exit
+!
+! --- Enlace hacia R1 ---
+interface GigabitEthernet0/1
+ description Enlace hacia R1
+ ip address {{L12_R2}} 255.255.255.252
+ no shutdown
+ exit
+!
+! --- Enlace hacia R3 ---
+interface GigabitEthernet0/2
+ description Enlace hacia R3
+ ip address {{L23_R2}} 255.255.255.252
+ no shutdown
+ exit
+!
+router rip
+ version 2
+ no auto-summary
+ network {{LAN3_NET}}
+ network {{L12_NET}}
+ network {{L23_NET}}
+ exit
+!
+end
+write memory

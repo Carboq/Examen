@@ -1,0 +1,29 @@
+enable
+configure terminal
+hostname R4
+no ip domain-lookup
+!
+! --- LAN Red {{LAN5_ID}} ---
+interface GigabitEthernet0/0
+ description LAN Red {{LAN5_ID}}
+ ip address {{LAN5_IP}} {{LAN5_MASK}}
+ ip helper-address {{SRV_IP}}
+ no shutdown
+ exit
+!
+! --- Enlace hacia R3 ---
+interface GigabitEthernet0/1
+ description Enlace hacia R3
+ ip address {{L34_R4}} 255.255.255.252
+ no shutdown
+ exit
+!
+router rip
+ version 2
+ no auto-summary
+ network {{LAN5_NET}}
+ network {{L34_NET}}
+ exit
+!
+end
+write memory

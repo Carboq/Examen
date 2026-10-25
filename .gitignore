@@ -1,0 +1,9 @@
+config.env
+p4/vms.conf
+p1/valores.env
+p1/out/
+*.log
+*.tmp
+p5/config.xml
+p3/resultados/
+p3/raw/
