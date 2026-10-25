@@ -25,14 +25,22 @@ icd-examen/
 ├── p1/                     Packet Tracer: no hay automatización externa
 │   ├── LEEME.md            procedimiento y tiempos
 │   ├── generar.sh          sustituye los {{ }} de los bloques
+│   ├── todo.sh             genera y muestra los pasos manuales
 │   ├── valores.env.example valores del esquema
 │   └── configs/            bloques para pegar en la CLI de cada router
 ├── p2/raid.sh              RAID 5 con mdadm (crear, fallar, reponer)
+├── p2/todo.sh              práctica completa: crear, fallar y reponer
 ├── p3/bench.sh             fio y tabla de resultados
+├── p3/todo.sh              instala fio y ejecuta las medidas
 ├── p4/vms.sh               creación de VM en Proxmox con qm
+├── p4/servicios.sh         Apache, MariaDB, Flask y nginx dentro de la VM
+├── p4/todo.sh              crea y arranca las VM de la P4
 ├── p4/vms.conf.example     una VM por línea
 ├── p5/pfsense.sh           VM de pfSense con 3 NIC y MAC reservada
-└── p5/LEEME.md             instalación, restauración y ajuste
+├── p5/todo.sh              calcula la MAC, crea y arranca la VM
+├── p5/LEEME.md             instalación, restauración y ajuste
+├── docs/GUIA_EJECUCION.md  guía paso a paso de las cinco prácticas
+└── docs/simulacros/P4.md   enunciado y guía del simulacro de la P4
 ```
 
 ## Puesta en marcha
@@ -44,6 +52,10 @@ cp config.env.example config.env
 $EDITOR config.env          # bridges, storage, VMID, MAC, discos...
 ```
 
+Los ficheros con datos del laboratorio no se suben al repositorio:
+`config.env`, `p4/vms.conf`, `p1/valores.env`, `p1/out/` y `p5/config.xml`.
+En una copia nueva hay que crearlos a partir de los `.example`.
+
 Cada script acepta argumentos; `config.env` solo aporta los valores por
 defecto. Comprueba la ayuda de cada uno:
 
@@ -52,6 +64,20 @@ defecto. Comprueba la ayuda de cada uno:
 ./icd.sh p5 help
 ```
 
+## Ejecución rápida
+
+| Práctica | Comando | Dónde |
+|---|---|---|
+| P1 | `./icd.sh p1 todo` | PC con Git Bash o VM Linux (Packet Tracer aparte) |
+| P2 | `./icd.sh p2 todo sdb,sdc,sdd,sde` | VM Debian con los discos |
+| P3 | `./icd.sh p3 todo` | VM Debian con la matriz montada |
+| P4 | `./icd.sh p4 todo` | host Proxmox |
+| P4 servicios | `sudo ./p4/servicios.sh web1` | dentro de cada VM Debian |
+| P5 | `./icd.sh p5 todo --mac-base MAC --pc 7` | host Proxmox |
+
+La guía completa, con el orden, las comprobaciones y los errores típicos, está
+en [`docs/GUIA_EJECUCION.md`](docs/GUIA_EJECUCION.md).
+
 ## Qué automatiza cada práctica
 
 | Práctica | Automático | Manual |
@@ -59,8 +85,32 @@ defecto. Comprueba la ayuda de cada uno:
 | P1 | bloques de configuración listos para pegar | topología, cableado, DHCP/DNS en la GUI |
 | P2 | detección de discos, `mdadm`, `mkfs`, montaje, fallo y reconstrucción | mapear los discos si se hace por GUI |
 | P3 | `fio` y tabla de resultados | montajes previos y lectura de resultados |
-| P4 | creación de las VM con `qm` | instalación del sistema operativo |
+| P4 | creación de las VM con `qm` y configuración de Apache, MariaDB, Flask y nginx dentro de cada VM | instalar Debian o clonar la plantilla |
 | P5 | creación de la VM con 3 NIC y MAC reservada | instalación de pfSense, restauración y ajuste de IPs |
+
+### P4: crear la VM y configurar los servicios
+
+En el host Proxmox, crea y arranca las VM:
+
+```bash
+./icd.sh p4 todo
+```
+
+El script de servicios se ejecuta **dentro** de cada VM Debian, no en el host:
+
+```bash
+# En web1
+sudo ./p4/servicios.sh web1
+# En web2
+sudo ./p4/servicios.sh web2
+# En app
+sudo ./p4/servicios.sh app
+```
+
+Si la plantilla no tiene los paquetes y no hay internet, el script falla con un
+mensaje claro; en ese caso hay que usar una plantilla con Apache, MariaDB,
+Flask, gunicorn y nginx ya instalados, o añadir un repositorio local. La opción
+`--no-apt` evita que intente instalar nada.
 
 ## Tiempos objetivo
 

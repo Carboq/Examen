@@ -35,7 +35,11 @@ Uso: pfsense.sh <orden>
   mac <MAC_BASE> <PC>   Calcula la MAC reservada: conserva los 4 primeros
                         octetos y pone 11:<PC en hexadecimal>.
                         Ej.: mac BC:24:11:0A:1B:2C 7  ->  BC:24:11:0A:11:07
-  create                Crea la VM (3 NIC, disco, ISO y MAC si está definida).
+  create [opciones]     Crea la VM (3 NIC, disco, ISO y MAC si está definida).
+    --mac MAC           MAC de la WAN (sobrescribe P5_MAC).
+    --vmid ID           ID de la VM (sobrescribe P5_VMID).
+    --iso VOLID         ISO de pfSense (sobrescribe P5_ISO).
+    --yes               No pedir confirmación.
   start | stop          Arranca o para la VM.
   info                  Configuración actual de la VM.
   help                  Esta ayuda.
@@ -129,7 +133,21 @@ shift || true
 
 case "$CMD" in
   mac)    cmd_mac "${1:-}" "${2:-}" ;;
-  create) cmd_create ;;
+  create)
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --mac) MAC=${2:?}; shift 2 ;;
+        --mac=*) MAC=${1#*=}; shift ;;
+        --vmid) VMID=${2:?}; shift 2 ;;
+        --vmid=*) VMID=${1#*=}; shift ;;
+        --iso) ISO=${2:?}; shift 2 ;;
+        --iso=*) ISO=${1#*=}; shift ;;
+        --yes) ASSUME_YES=1; shift ;;
+        -h|--help|help) usage; exit 0 ;;
+        *) die "Opción desconocida: $1" ;;
+      esac
+    done
+    cmd_create ;;
   start)  cmd_start ;;
   stop)   cmd_stop ;;
   info)   cmd_info ;;

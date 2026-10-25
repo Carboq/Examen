@@ -2,6 +2,6 @@
 # Formato: nombre|vmid|RAM_MB|vCPU|disco_GB|bridge|mac|iso
 # mac e iso pueden quedar vacíos. Las líneas con # se ignoran.
 
-web1|210|2048|2|16|vmbr1||local:iso/debian-12-netinst.iso
-web2|211|2048|2|16|vmbr1||
-app|212|2048|2|16|vmbr1||
+web1|201|2048|2|32|vmbr1||local:iso/debian-12-netinst.iso
+web2|202|2048|2|32|vmbr1||
+app|203|2048|2|32|vmbr1||
