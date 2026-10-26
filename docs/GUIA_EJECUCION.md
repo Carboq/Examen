@@ -33,12 +33,15 @@ En el PC, con la cuenta de GitHub `Carboq`:
 
 - **GitHub Desktop**: `File → Clone repository → URL` y pega la URL del repo.
 - **Web**: abre el repo, botón verde **Code → Download ZIP** y descomprime.
-- **Terminal**: `git clone <URL> icd-examen`.
+- **Terminal**: `git clone https://github.com/Carboq/Examen.git` (es privado:
+  pide usuario `Carboq` y un token como contraseña; lo detalla la guía local).
 
-El repo es privado: sin iniciar sesión verás un 404. En el PC del examen no hay
-internet, así que descárgalo antes y llévalo en un USB o cópialo al host
-Proxmox. El detalle de la descarga y de la MAC está en el documento local
-`ICD/GUIA_MAC_Y_DESCARGA.md` (ese no se sube al repositorio).
+El repo es privado: sin iniciar sesión verás un 404. En el laboratorio la red
+puede filtrar por MAC, así que **antes de descargar** configura la MAC del
+equipo o de la VM que vaya a tener internet. Está explicado en el documento
+local `ICD/GUIA_MAC_Y_DESCARGA.md` (ese no se sube al repositorio). No cuentes
+con USB: cuando el equipo tenga red, descarga el repo directamente allí (ZIP o
+`git clone`).
 
 Dentro de la carpeta:
 
@@ -257,8 +260,9 @@ scp -r . root@192.168.50.12:/root/Examen
 scp -r . root@192.168.50.13:/root/Examen
 ```
 
-O entra por la consola de Proxmox y copia el repo por USB. Después, **dentro de
-cada VM**:
+Si no hay SSH, entra por la consola de Proxmox y descarga el repo dentro de la
+VM si tiene red, o cópialo por la red con `scp` desde el equipo donde lo
+descargaste. No necesitas USB. Después, **dentro de cada VM**:
 
 ```bash
 cd /root/Examen
@@ -318,6 +322,10 @@ Con la MAC de la primera VM del laboratorio y tu número de PC:
 La regla: conserva los cuatro primeros octetos y sustituye los dos últimos por
 `11:<PC en hexadecimal>`. Si el laboratorio te da la MAC ya calculada, úsala
 tal cual.
+
+Esta MAC es para la **WAN de pfSense**. Si el laboratorio te da otra MAC para
+navegar o descargar el repositorio, no las mezcles: una misma MAC no puede estar
+en dos equipos a la vez.
 
 ### 6.2 Preparar `config.env`
 

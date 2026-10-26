@@ -1,5 +1,9 @@
 # P5 — pfSense en Proxmox
 
+> La MAC de esta práctica es la de la **WAN de pfSense**. No es la misma que
+> uses para navegar o descargar el repositorio; no pongas una MAC en dos equipos
+> a la vez.
+
 ## Antes del examen
 
 1. En tu pfSense del laboratorio: **Diagnostics → Backup & Restore → Backup**.

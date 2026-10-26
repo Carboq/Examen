@@ -46,11 +46,16 @@ icd-examen/
 ## Puesta en marcha
 
 ```bash
-git clone <URL> icd-examen
-cd icd-examen
+git clone https://github.com/Carboq/Examen.git
+cd Examen
 cp config.env.example config.env
 $EDITOR config.env          # bridges, storage, VMID, MAC, discos...
 ```
+
+El repo es privado: si usas `git clone`, GitHub pedirá usuario `Carboq` y un
+token como contraseña. También puedes descargar el ZIP desde la web
+(**Code → Download ZIP**). No hace falta USB: descárgalo en el equipo que tenga
+red.
 
 Los ficheros con datos del laboratorio no se suben al repositorio:
 `config.env`, `p4/vms.conf`, `p1/valores.env`, `p1/out/` y `p5/config.xml`.
