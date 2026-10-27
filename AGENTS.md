@@ -1,25 +1,53 @@
 # OpenCode en el laboratorio — guía de uso del repositorio
 
+> Entorno: **VM Debian 12 + host Proxmox VE 8**, con Packet Tracer en Windows
+> para la P1. No es un entorno Windows genérico.
+
 Este documento es la referencia para trabajar con **OpenCode** dentro de este
 repositorio. OpenCode lo lee automáticamente si se arranca desde la raíz del
 proyecto. Si no lo hace, pídele explícitamente:
 
 > Lee `AGENTS.md`, `README.md` y `docs/GUIA_EJECUCION.md` antes de responder.
 
+## 0. Entorno real: Debian 12 + Proxmox VE 8
+
+Hay que distinguir cuatro sitios:
+
+| Sitio | Qué se ejecuta allí | ¿OpenCode? |
+|---|---|---|
+| VM Debian 12 de trabajo | Editar el repo, P2/P3, generar comandos y entrar por SSH en las demás máquinas. | **Sí, aquí se instala.** |
+| Host Proxmox VE 8 | `qm` para crear y arrancar las VM de P4/P5. | **No recomendado.** |
+| VM `web1`, `web2` y `app` | `p4/servicios.sh` dentro de cada Debian. | Opcional, por SSH. |
+| Windows + Packet Tracer | P1 y edición/descarga del repo. | Solo Git Bash para generar P1. |
+
+Proxmox VE 8 está basado en Debian, pero **no es un puesto de trabajo**: no
+conviene instalar OpenCode, Python, Node ni herramientas de desarrollo en el
+hipervisor. Si se instala ahí, hay que borrarlo al terminar y no dejar el
+`PATH` modificado.
+
+La VM Debian de trabajo no puede ejecutar `qm` por sí sola. Para P4/P5 hay que
+entrar en el host Proxmox por SSH o copiar los comandos y ejecutarlos allí.
+
 ## 1. Antes de abrir OpenCode
 
-En Linux, macOS o Git Bash:
+En la VM Debian 12 (recomendado):
 
 ```bash
+sudo apt update && sudo apt install -y curl tar
 curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path
 ~/.opencode/bin/opencode
 ```
 
-En Windows hay que usar **Git Bash**, no PowerShell ni CMD. Si no está
-disponible, usa el CLI standalone o WSL.
+El instalador descarga desde `opencode.ai`; si la red del laboratorio filtra
+por MAC, configura antes la MAC del equipo o de la VM (ver la guía local de
+MAC/descarga). En el host Proxmox no se recomienda instalarlo.
 
-Abre OpenCode **desde la carpeta del repositorio**, no desde `C:\` ni desde
-`Documentos`:
+Si trabajas desde Windows, usa **Git Bash** para generar P1 y editar el repo;
+no uses PowerShell/CMD para los scripts de P2–P5. En Windows no hay `qm` ni
+`mdadm`.
+
+Abre OpenCode **desde la carpeta del repositorio**, no desde `/` ni desde tu
+`$HOME` sin haber entrado en el proyecto:
 
 ```bash
 cd /ruta/al/repositorio/Examen
@@ -68,10 +96,14 @@ ficheros `.example`.
 
 - **No ejecutar comandos destructivos sin confirmación expresa.** P2 borra
   firmas de disco y `cleanup` desmonta y destruye la matriz.
+- **OpenCode se instala en la VM Debian de trabajo, no en el host Proxmox.**
+  El hipervisor solo debe ejecutar `qm`; si se instala allí, hay que limpiarlo.
 - **P2 y P3 van dentro de una VM Debian**, nunca en el host Proxmox ni en
   Windows.
 - **P4 y P5 se crean desde el host Proxmox** con `qm`; `p4/servicios.sh` se
   ejecuta **dentro** de cada VM Debian, no en el host.
+- **No ejecutar `qm` en la VM Debian de trabajo.** No existe ahí: hay que entrar
+  al host Proxmox por SSH o copiar el comando y ejecutarlo en el host.
 - **No inventar valores de laboratorio.** Leer `config.env`; si no existe,
   copiar `config.env.example` y preguntar antes de rellenarlo.
 - **No mezclar las memorias con los scripts.** Las memorias de P4/P5 usan
@@ -89,40 +121,41 @@ ficheros `.example`.
 ## 5. Flujo típico en el laboratorio
 
 ```bash
-# 1. Descargar el repositorio (ZIP o git clone)
+# 1. En la VM Debian 12 de trabajo: descargar y preparar el repo
 git clone https://github.com/Carboq/Examen.git
 cd Examen
-
-# 2. Crear la configuración local
 cp config.env.example config.env
 cp p1/valores.env.example p1/valores.env
 cp p4/vms.conf.example p4/vms.conf
+# editar config.env: bridges, storage, ISO, VMID, MAC, discos...
 
-# 3. Editar los valores del laboratorio
-#    bridges, storage, ISO, VMID, MAC, discos...
-
-# 4. Comprobar la entrada común
+# 2. Comprobar la entrada común y las ayudas
 ./icd.sh --help
-
-# 5. Consultar la ayuda de la práctica antes de ejecutarla
 ./icd.sh p2 help
 ./icd.sh p4 help
 ./icd.sh p5 help
 
-# 6. Ejecutar según la práctica y la máquina
+# 3. Prácticas que van en la VM Debian
 ./icd.sh p1 todo
 ./icd.sh p2 todo sdb,sdc,sdd,sde
 ./icd.sh p3 todo
+
+# 4. P4/P5: estos comandos van en el HOST PROXMOX, no en la VM Debian
 ./icd.sh p4 todo
 ./icd.sh p5 todo --mac-base MAC --pc 7
 ```
+
+Si OpenCode está en la VM Debian, para P4/P5 debe **generar los comandos y
+ejecutarlos en el host Proxmox** (por SSH o copiándolos). No puede lanzar `qm`
+desde la VM de trabajo.
 
 Después:
 
 - P1: montar la topología en Packet Tracer y pegar los ficheros de `p1/out/`.
 - P2: comprobar `cat /proc/mdstat` y el montaje.
 - P3: revisar la tabla de resultados de `fio`.
-- P4: entrar en cada VM y ejecutar `sudo ./p4/servicios.sh web1|web2|app`.
+- P4: entrar en `web1`, `web2` y `app` y ejecutar
+  `sudo ./p4/servicios.sh web1|web2|app` dentro de cada una.
 - P5: instalar pfSense, asignar WAN/LAN/DMZ y restaurar `config.xml`.
 
 ## 6. Prompts útiles
@@ -137,6 +170,8 @@ Después:
   diferencias que hay que aplicar.»
 - «Antes de ejecutar, dime si el comando es destructivo, en qué máquina va y
   cómo se revierte.»
+- «Para P4/P5, separa lo que va en el host Proxmox de lo que va dentro de la VM
+  Debian. No mezcles los dos entornos.»
 - «No toques `git`; solo explica qué cambiarías y en qué archivo.»
 
 ## 7. Documentos que no están en GitHub
