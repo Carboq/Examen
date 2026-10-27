@@ -40,6 +40,8 @@ icd-examen/
 ├── p5/pfsense.sh           VM de pfSense con 3 NIC y MAC reservada
 ├── p5/todo.sh              calcula la MAC, crea y arranca la VM
 ├── p5/LEEME.md             instalación, restauración y ajuste
+├── docs/GUIONES.md         índice de los guiones oficiales
+├── docs/guiones/           PDFs oficiales de las prácticas 1–5
 ├── docs/GUIA_EJECUCION.md   guía paso a paso de las cinco prácticas
 ├── docs/CREAR_VM_PROXMOX.md crear una VM y conectarla a la red
 └── docs/simulacros/P4.md   enunciado y guía del simulacro de la P4
@@ -74,6 +76,13 @@ defecto. Comprueba la ayuda de cada uno:
 ./icd.sh p2 help
 ./icd.sh p5 help
 ```
+
+## Guiones de las prácticas
+
+Los guiones oficiales en PDF de P1–P5 están en
+[`docs/GUIONES.md`](docs/GUIONES.md), con enlaces al PDF y a la guía del
+repositorio de cada práctica. Son material docente: se incluyen para uso
+académico y no se publican credenciales del host Proxmox.
 
 ## OpenCode
 

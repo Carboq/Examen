@@ -8,6 +8,9 @@ enunciado: si el profesor cambia una IP, un ID o una red, se cambia en
 > Los scripts son de Linux. En Windows solo se descarga y se edita; para
 > ejecutar P2, P3, P4 y P5 hace falta el host Proxmox o una VM Debian. La P1 se
 > puede generar con Git Bash, pero el montaje es en Packet Tracer.
+>
+> Los guiones oficiales en PDF están en `docs/guiones/`; el índice, en
+> [`GUIONES.md`](GUIONES.md).
 
 ## 0. Dónde se ejecuta cada cosa
 

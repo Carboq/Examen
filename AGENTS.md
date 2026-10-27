@@ -74,6 +74,7 @@ ficheros `.example`.
 |---|---|
 | `README.md` | Visión general, requisitos, estructura, comandos rápidos y tiempos. |
 | `docs/GUIA_EJECUCION.md` | Guía paso a paso de P1–P5: dónde se ejecuta cada cosa, orden, validación y errores típicos. |
+| `docs/GUIONES.md` | Índice de los guiones oficiales P1–P5 y enlaces a los PDFs de `docs/guiones/`. |
 | `docs/CREAR_VM_PROXMOX.md` | Crear una VM en Proxmox por GUI o `qm`, conectarla a `vmbr0`, asignar MAC y comprobar internet. |
 | `docs/simulacros/P4.md` | Enunciado y plan de 90 minutos para una variante de P4. |
 | `p1/LEEME.md` | P1 en Packet Tracer: topología, configuración y comprobaciones manuales. |
@@ -87,12 +88,13 @@ ficheros `.example`.
 1. `README.md` — para entender qué automatiza cada práctica.
 2. `docs/GUIA_EJECUCION.md` — para saber **dónde** se ejecuta cada comando.
 3. `docs/CREAR_VM_PROXMOX.md` — si hay que crear la VM o arreglar su red.
-4. El documento de la práctica que se vaya a hacer:
+4. `docs/GUIONES.md` — índice de los guiones oficiales en PDF.
+5. El documento de la práctica que se vaya a hacer:
    - P1: `p1/LEEME.md`
    - P2 y P3: sección correspondiente de `docs/GUIA_EJECUCION.md`
    - P4: `docs/simulacros/P4.md` y `docs/GUIA_EJECUCION.md`
    - P5: `p5/LEEME.md` y `docs/GUIA_EJECUCION.md`
-5. Los `.example` antes de crear la configuración local.
+6. Los `.example` antes de crear la configuración local.
 
 ## 4. Reglas de trabajo para OpenCode
 
