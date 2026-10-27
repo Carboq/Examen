@@ -20,6 +20,7 @@ Centros de Datos** (UPV). Reproduce con scripts los montajes de las prácticas
 ```
 icd-examen/
 ├── icd.sh                  entrada única: ./icd.sh p2 ...
+├── AGENTS.md               guía de OpenCode en el laboratorio
 ├── config.env.example      variables del entorno (copiar a config.env)
 ├── lib/common.sh           funciones compartidas
 ├── p1/                     Packet Tracer: no hay automatización externa
@@ -52,8 +53,7 @@ cp config.env.example config.env
 $EDITOR config.env          # bridges, storage, VMID, MAC, discos...
 ```
 
-El repo es privado: si usas `git clone`, GitHub pedirá usuario `Carboq` y un
-token como contraseña. También puedes descargar el ZIP desde la web
+El repo es público: puedes clonarlo o descargar el ZIP desde la web
 (**Code → Download ZIP**). No hace falta USB: descárgalo en el equipo que tenga
 red.
 
@@ -68,6 +68,22 @@ defecto. Comprueba la ayuda de cada uno:
 ./icd.sh p2 help
 ./icd.sh p5 help
 ```
+
+## OpenCode
+
+La guía para instalar y usar OpenCode en el laboratorio está en
+[`AGENTS.md`](AGENTS.md). OpenCode la lee automáticamente al arrancar desde la
+raíz del repositorio. Incluye la instalación sin root, la limpieza y las reglas
+para no mezclar el host Proxmox con las VM Debian.
+
+```bash
+curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path
+cd /ruta/al/repositorio/Examen
+~/.opencode/bin/opencode
+```
+
+Si no lee el archivo solo, pídele: «Lee `AGENTS.md`, `README.md` y
+`docs/GUIA_EJECUCION.md` antes de responder».
 
 ## Ejecución rápida
 
