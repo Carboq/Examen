@@ -85,6 +85,9 @@ cd /ruta/al/repositorio/Examen
 Si no lee el archivo solo, pídele: «Lee `AGENTS.md`, `README.md` y
 `docs/GUIA_EJECUCION.md` antes de responder».
 
+Para desinstalarlo y borrar sus datos, sigue el apartado **8. Desinstalar
+OpenCode** de [`AGENTS.md`](AGENTS.md#8-desinstalar-opencode).
+
 ## Ejecución rápida
 
 | Práctica | Comando | Dónde |

@@ -185,7 +185,77 @@ Después:
 - `p5/config.xml`: backup local de pfSense. Sin él, P5 no se puede restaurar;
   la instalación y el ajuste manual siguen siendo necesarios.
 
-## 8. Limpieza al terminar
+## 8. Desinstalar OpenCode
+
+Si se instaló con el script (lo normal):
+
+```bash
+rm -rf ~/.opencode
+rm -rf ~/.config/opencode
+rm -rf ~/.local/share/opencode
+rm -rf ~/.cache/opencode
+```
+
+Comprobar que ya no queda:
+
+```bash
+command -v opencode
+ls ~/.opencode 2>/dev/null
+```
+
+No debe devolver nada.
+
+### Si el instalador modificó el PATH
+
+Si se instaló **sin** `--no-modify-path`, el script añadió una línea al final de
+`~/.bashrc`, `~/.zshrc` o `~/.profile`. Búscala con:
+
+```bash
+grep -n opencode ~/.bashrc ~/.zshrc ~/.profile
+```
+
+Elimina la línea que añade `~/.opencode/bin` al `PATH` y recarga la shell:
+
+```bash
+exec "$SHELL"
+```
+
+### Si se instaló como root
+
+Los archivos estarán en `/root`, no en el home de `proxmox`. Hay que borrarlos
+como root:
+
+```bash
+rm -rf /root/.opencode
+rm -rf /root/.config/opencode
+rm -rf /root/.local/share/opencode
+rm -rf /root/.cache/opencode
+```
+
+### Otras formas de instalación
+
+- **npm:** `npm uninstall -g @opencode/cli`
+- **Homebrew:** `brew uninstall opencode-v2`
+- **Desktop:** desinstalar desde Aplicaciones/Configuración y borrar sus datos.
+- **Windows:** borrar `%USERPROFILE%\.opencode`, revisar
+  `%USERPROFILE%\.config\opencode` y `%LOCALAPPDATA%\opencode`, y quitar la línea
+  del `PATH` si se añadió.
+
+### Datos y credenciales
+
+- `~/.local/share/opencode` puede contener sesiones y credenciales. Al borrarlo
+  se cierra la sesión.
+- Si se usó un token de GitHub, revocarlo desde GitHub.
+- Revisar si el proyecto creó configuración local:
+
+```bash
+find ~/Examen -maxdepth 2 \( -name opencode.json -o -name .opencode \) -print
+```
+
+No borres esos archivos si los quieres conservar; solo son configuración local
+de OpenCode.
+
+## 9. Limpieza del laboratorio
 
 Además de borrar OpenCode:
 
