@@ -40,7 +40,8 @@ icd-examen/
 ├── p5/pfsense.sh           VM de pfSense con 3 NIC y MAC reservada
 ├── p5/todo.sh              calcula la MAC, crea y arranca la VM
 ├── p5/LEEME.md             instalación, restauración y ajuste
-├── docs/GUIA_EJECUCION.md  guía paso a paso de las cinco prácticas
+├── docs/GUIA_EJECUCION.md   guía paso a paso de las cinco prácticas
+├── docs/CREAR_VM_PROXMOX.md crear una VM y conectarla a la red
 └── docs/simulacros/P4.md   enunciado y guía del simulacro de la P4
 ```
 
@@ -56,6 +57,11 @@ $EDITOR config.env          # bridges, storage, VMID, MAC, discos...
 El repo es público: puedes clonarlo o descargar el ZIP desde la web
 (**Code → Download ZIP**). No hace falta USB: descárgalo en el equipo que tenga
 red.
+
+Si necesitas crear la VM desde cero, cambiar su bridge o arreglar la salida a
+internet, consulta [`docs/CREAR_VM_PROXMOX.md`](docs/CREAR_VM_PROXMOX.md):
+incluye el asistente de la GUI, los comandos `qm`, la MAC, el DHCP y las
+comprobaciones dentro de Debian.
 
 Los ficheros con datos del laboratorio no se suben al repositorio:
 `config.env`, `p4/vms.conf`, `p1/valores.env`, `p1/out/` y `p5/config.xml`.

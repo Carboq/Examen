@@ -33,15 +33,17 @@ En el PC, con la cuenta de GitHub `Carboq`:
 
 - **GitHub Desktop**: `File → Clone repository → URL` y pega la URL del repo.
 - **Web**: abre el repo, botón verde **Code → Download ZIP** y descomprime.
-- **Terminal**: `git clone https://github.com/Carboq/Examen.git` (es privado:
-  pide usuario `Carboq` y un token como contraseña; lo detalla la guía local).
+- **Terminal**: `git clone https://github.com/Carboq/Examen.git`.
 
-El repo es privado: sin iniciar sesión verás un 404. En el laboratorio la red
-puede filtrar por MAC, así que **antes de descargar** configura la MAC del
+El repo es público: no hace falta token para descargarlo. En el laboratorio la
+red puede filtrar por MAC, así que **antes de descargar** configura la MAC del
 equipo o de la VM que vaya a tener internet. Está explicado en el documento
 local `ICD/GUIA_MAC_Y_DESCARGA.md` (ese no se sube al repositorio). No cuentes
 con USB: cuando el equipo tenga red, descarga el repo directamente allí (ZIP o
 `git clone`).
+
+Si la VM todavía no existe o no tiene red, sigue
+[`CREAR_VM_PROXMOX.md`](CREAR_VM_PROXMOX.md).
 
 Dentro de la carpeta:
 
