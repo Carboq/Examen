@@ -101,6 +101,25 @@ Si quieres crear los contenedores sin instalar servicios:
 ./icd.sh p4 lxc services
 ```
 
+> **Si `vmbr1` no tiene salida a internet**, `p4/servicios.sh` no podrá
+> instalar Apache, MariaDB, Flask y nginx con `apt-get`. Añade una NIC
+> temporal en `vmbr0` solo mientras se ejecutan los servicios:
+>
+> ```bash
+> for id in 201 202 203; do
+>   pct set "$id" --net1 name=eth1,bridge=vmbr0,ip=dhcp
+> done
+> ./icd.sh p4 lxc services
+> for id in 201 202 203; do
+>   pct set "$id" --delete net1
+> done
+> ```
+>
+> La IP de servicio sigue siendo la de `vmbr1` (`192.168.50.x`). La NIC
+> temporal solo se usa para descargar paquetes y se retira antes de la
+> demostración. Si el profesor no permite modificar la red, usa una plantilla
+> LXC con los paquetes ya instalados o un mirror local.
+
 ### 3.3. Comprobar
 
 ```bash

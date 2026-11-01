@@ -25,6 +25,8 @@
 - [ ] Los discos reales de P2 aparecen en `lsblk`.
 - [ ] El host Proxmox tiene la plantilla Debian 12 para LXC.
 - [ ] Los bridges `vmbr0`, `vmbr1` y `vmbr2` existen si los vas a usar.
+- [ ] Si `vmbr1` no tiene internet, sabes añadir y retirar la NIC temporal de
+      `vmbr0` para que los LXC puedan instalar paquetes.
 
 ## 3. P1
 
