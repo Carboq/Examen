@@ -52,6 +52,8 @@ Opciones:
   -h, --help      Esta ayuda.
 
 El número total de discos debe ser --active + --spares.
+En el examen, los discos son reales y se conectan a la VM desde Proxmox.
+El script rechaza el disco del sistema y las particiones.
 EOF
 }
 
@@ -75,14 +77,10 @@ cmd_detect() {
   require_root
   need lsblk
   need wipefs
+  need findmnt
 
-  local root_src root_disk name size type model
-  root_src=$(findmnt -n -o SOURCE / || true)
-  root_disk=""
-  if [[ -n $root_src ]]; then
-    root_disk=$(lsblk -nlo PKNAME "$root_src" 2>/dev/null | head -n1 || true)
-    [[ -n $root_disk ]] || root_disk=$(basename "$root_src")
-  fi
+  local root_disk name size type model
+  root_disk=$(root_disk_name || true)
 
   log "Disco del sistema: ${root_disk:-no identificado}"
   printf '\n%-12s %-8s %-10s %s\n' "DISCO" "TAMAÑO" "TIPO" "MODELO"
@@ -106,6 +104,7 @@ cmd_create() {
   need mdadm
   need wipefs
   need lsblk
+  need findmnt
 
   [[ -n $DISKS ]] || die "Indica los discos con --disks sdb,sdc,sdd,sde (o usa 'detect')."
 
@@ -121,6 +120,11 @@ cmd_create() {
 
   for d in "${devs[@]}"; do
     [[ -b $d ]] || die "$d no es un dispositivo de bloque."
+    is_whole_disk "$d" \
+      || die "$d no es un disco completo. No uses particiones para la matriz."
+    if is_root_disk "$d"; then
+      die "$d es el disco del sistema. Elige otro disco; no se puede usar para P2."
+    fi
   done
 
   if [[ -e $MD ]]; then
@@ -136,7 +140,7 @@ cmd_create() {
   else
     for d in "${devs[@]}"; do
       if ! disk_is_free "$d"; then
-        die "$d no está libre (montado, en una matriz o con firmas). Revisa con 'detect' o usa --force si estás seguro)."
+        die "$d no está libre (montado, en una matriz o con firmas). Revisa con 'detect' o usa --force si estás seguro."
       fi
     done
   fi
@@ -208,11 +212,17 @@ cmd_fail() {
 cmd_add() {
   require_root
   need mdadm
+  need findmnt
   [[ -e $MD ]] || die "No existe $MD."
   local dev=${1:-}
   [[ -n $dev ]] || die "Indica el disco: ./raid.sh add sdb"
   dev=$(norm_dev "$dev")
   [[ -b $dev ]] || die "$dev no es un dispositivo de bloque."
+  is_whole_disk "$dev" \
+    || die "$dev no es un disco completo. No uses particiones para la matriz."
+  if is_root_disk "$dev"; then
+    die "$dev es el disco del sistema. No se puede añadir a la matriz."
+  fi
 
   log "Añadiendo $dev a $MD..."
   mdadm --add "$MD" "$dev"
@@ -235,6 +245,7 @@ cmd_status() {
 cmd_cleanup() {
   require_root
   need mdadm
+  need findmnt
 
   if mountpoint -q "$MNT"; then
     log "Desmontando $MNT..."
@@ -260,6 +271,10 @@ cmd_cleanup() {
   local d
   for d in "${devs[@]}"; do
     [[ -b $d ]] || continue
+    if is_root_disk "$d"; then
+      warn "No borro $d: es el disco del sistema."
+      continue
+    fi
     log "Borrando firma de $d..."
     mdadm --zero-superblock "$d" 2>/dev/null || true
     wipefs -a "$d" >/dev/null 2>&1 || true

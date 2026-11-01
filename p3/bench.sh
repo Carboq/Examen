@@ -35,6 +35,8 @@ Opciones de run:
 
 Pruebas: lectura y escritura secuencial y aleatoria, con iodepth 16.
 Requiere fio instalado en la MV.
+En el examen, TARGET debe ser la matriz de discos reales de P2, no el disco
+del sistema.
 EOF
 }
 

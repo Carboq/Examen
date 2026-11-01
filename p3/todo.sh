@@ -26,6 +26,8 @@ Uso: todo.sh [opciones]
   --runtime S       Duración de cada prueba (por defecto 15 s).
   --no-install      No intentar instalar fio.
   -h, --help        Esta ayuda.
+
+TARGET debe ser la matriz de discos reales de P2, no el disco del sistema.
 EOF
 }
 

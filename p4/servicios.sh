@@ -52,7 +52,8 @@ Ejemplos:
   sudo ./servicios.sh app --no-apt
 
 El script es idempotente: se puede volver a ejecutar para corregir algo.
-No cambia la IP ni el hostname; eso se configura antes en /etc/network/interfaces.
+No cambia la IP ni el hostname; eso se configura antes en /etc/network/interfaces
+o al crear el contenedor LXC.
 EOF
 }
 
@@ -80,10 +81,13 @@ check_env() {
   require_root
   [[ -f /etc/debian_version ]] || die "Este script está pensado para Debian 12."
   [[ ! -d /etc/pve ]] \
-    || die "Estás en el host Proxmox. Ejecuta este script DENTRO de la VM (web1, web2 o app)."
+    || die "Estás en el host Proxmox. Ejecuta este script DENTRO de la VM o del contenedor (web1, web2 o app)."
   need systemctl
-  need ip
   need dpkg
+  if ! command -v ip >/dev/null 2>&1; then
+    ensure_packages iproute2
+  fi
+  need ip
 }
 
 check_ip() {

@@ -21,6 +21,10 @@ repositorio.
 
 - [Crear una VM en Proxmox VE y conectarla a la red](CREAR_VM_PROXMOX.md).
 - [Guía de ejecución de las cinco prácticas](GUIA_EJECUCION.md).
+- [Entorno real: VM Debian sobre Proxmox y discos reales](ENTORNO_EXAMEN.md).
+- [Contenedores LXC para P4 y P5](CONTENEDORES.md).
+- [Guion para grabar la demostración](VIDEO_DEMO.md).
+- [Lista de comprobación para el examen](CHECKLIST_EXAMEN.md).
 - [Simulacro de P4](simulacros/P4.md).
 - [README del repositorio](../README.md).
 

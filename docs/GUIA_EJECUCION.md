@@ -5,9 +5,14 @@ descargas el repositorio hasta que validas la práctica. No sustituye al
 enunciado: si el profesor cambia una IP, un ID o una red, se cambia en
 `config.env` o en el fichero que corresponda.
 
-> Los scripts son de Linux. En Windows solo se descarga y se edita; para
-> ejecutar P2, P3, P4 y P5 hace falta el host Proxmox o una VM Debian. La P1 se
-> puede generar con Git Bash, pero el montaje es en Packet Tracer.
+> Los scripts son de Linux. En Windows solo se descarga, se edita y se prepara
+> el USB; para ejecutar P2, P3, P4 y P5 hace falta el host Proxmox o una VM
+> Debian. La P1 se puede generar con Git Bash, pero el montaje es en Packet
+> Tracer.
+>
+> En el examen, P2 y P3 se ejecutan en una **VM Debian sobre Proxmox** y los
+> discos son **reales**. P4 y P5 se crean desde el host Proxmox. No mezcles los
+> dos entornos: [`ENTORNO_EXAMEN.md`](ENTORNO_EXAMEN.md).
 >
 > Los guiones oficiales en PDF están en `docs/guiones/`; el índice, en
 > [`GUIONES.md`](GUIONES.md).
@@ -16,19 +21,20 @@ enunciado: si el profesor cambia una IP, un ID o una red, se cambia en
 
 | Sitio | Qué se hace allí |
 |---|---|
-| Tu PC con Windows | Descargar el repo, editar `config.env`, generar la P1 y llevar el repo al laboratorio. |
-| Host Proxmox (root) | Crear/arrancar las VM de P4 y P5. |
-| VM Debian (root) | P2 (RAID), P3 (fio) y los servicios de P4. |
+| Tu PC con Windows | Descargar el repo, editar `config.env`, generar la P1 y preparar el USB. |
+| Host Proxmox (root) | Crear/arrancar VM con `qm`; crear LXC con `pct`; crear pfSense. |
+| VM Debian (root) | P2 (RAID), P3 (fio) y edición del repo. |
+| Contenedores LXC | Servicios de P4 y servidores de apoyo de P5. |
 | Packet Tracer | P1: topología, cableado, DHCP/DNS y pegar la configuración. |
 
 No ejecutes `./icd.sh p2` en el host Proxmox: la matriz se crea dentro de una VM
 Debian, con discos que puedas borrar. Tampoco ejecutes `p4/servicios.sh` en el
-host: va dentro de cada VM.
+host: va dentro de cada VM o contenedor.
 
 En Windows, abre **Git Bash** en la carpeta del repo (clic derecho → *Git Bash
 Here*) y ejecuta `bash icd.sh ...`. Eso sirve para la P1. Para P2, P3, P4 y P5
 entra en la VM Debian o en el host Proxmox; Windows no tiene `mdadm`, `qm` ni
-`apt`.
+`pct`.
 
 ## 1. Descargar y preparar el repositorio
 
@@ -41,9 +47,10 @@ En el PC, con la cuenta de GitHub `Carboq`:
 El repo es público: no hace falta token para descargarlo. En el laboratorio la
 red puede filtrar por MAC, así que **antes de descargar** configura la MAC del
 equipo o de la VM que vaya a tener internet. Está explicado en el documento
-local `ICD/GUIA_MAC_Y_DESCARGA.md` (ese no se sube al repositorio). No cuentes
-con USB: cuando el equipo tenga red, descarga el repo directamente allí (ZIP o
-`git clone`).
+local `ICD/GUIA_MAC_Y_DESCARGA.md` (ese no se sube al repositorio). Si llevas el
+USB preparado, también puedes copiar la carpeta `Entrega_Examen_USB` sin
+necesidad de descargar nada. La carpeta se genera con
+`tools/crear_entrega_usb.ps1` y se explica en el [`README`](../README.md).
 
 Si la VM todavía no existe o no tiene red, sigue
 [`CREAR_VM_PROXMOX.md`](CREAR_VM_PROXMOX.md).
@@ -63,7 +70,8 @@ Edita `config.env` con los valores del laboratorio: discos de P2, `STORAGE`,
 Si al descomprimir el ZIP los scripts pierden el permiso de ejecución:
 
 ```bash
-chmod +x icd.sh p1/*.sh p2/*.sh p3/*.sh p4/*.sh p5/*.sh
+chmod +x icd.sh p1/*.sh p2/*.sh p3/*.sh p4/*.sh p5/*.sh \
+  contenedores/*.sh contenedores/p4/*.sh contenedores/p5/*.sh
 # o ejecuta siempre con: bash icd.sh ...
 ```
 
@@ -111,7 +119,9 @@ Tracer. Lo que ahorra el script es escribir y revisar la configuración.
 ## 3. P2 — RAID 5
 
 **Dónde:** VM Debian, como root, con 4 discos libres (o los que pida el
-enunciado).
+enunciado). En el examen los discos son **reales** y se conectan a la VM desde
+Proxmox; no uses discos virtuales ni el disco del sistema. Los pasos para
+conectarlos y comprobarlos están en [`ENTORNO_EXAMEN.md`](ENTORNO_EXAMEN.md).
 
 Primero mira qué discos hay. **No adivines las letras:**
 
@@ -169,7 +179,8 @@ Al terminar, si quieres dejar los discos limpios:
 
 ## 4. P3 — Prestaciones
 
-**Dónde:** la misma VM Debian, con la matriz de P2 montada en `/mnt/raid5`.
+**Dónde:** la misma VM Debian, con la matriz de P2 montada en `/mnt/raid5`. Esa
+matriz debe estar sobre los discos reales, no sobre el disco de la VM.
 
 ```bash
 ./icd.sh p3 todo
@@ -210,6 +221,26 @@ memoria.
 ## 5. P4 — VM en Proxmox y servicios
 
 **Dónde:** el host Proxmox para crear las VM; cada VM Debian para los servicios.
+
+### 5.0 Alternativa rápida: contenedores LXC
+
+Si el profesor permite contenedores, no hace falta instalar Debian ni clonar
+plantillas. En el host Proxmox:
+
+```bash
+# Una vez: descargar la plantilla Debian 12
+pveam update
+pveam available --section system | grep debian-12
+pveam download local debian-12-standard_12.7-1_amd64.tar.zst
+
+# Crear web1, web2 y app y configurar los servicios
+./icd.sh p4 lxc create
+./icd.sh p4 lxc status
+```
+
+Los contenedores usan por defecto `vmbr1`, `192.168.50.11–.13` y 2 GB de RAM.
+La guía completa está en [`CONTENEDORES.md`](CONTENEDORES.md). Si el enunciado
+exige “máquinas virtuales”, sigue con los apartados 5.1–5.5.
 
 ### 5.1 Preparar `p4/vms.conf`
 
@@ -341,6 +372,8 @@ P5_ISO=local:iso/pfSense-CE-2.7.2-RELEASE-amd64.iso
 P5_WAN_BRIDGE=vmbr0
 P5_LAN_BRIDGE=vmbr1
 P5_DMZ_BRIDGE=vmbr2
+P5_LAN_GW=192.168.100.1
+P5_DMZ_GW=192.168.50.1
 ```
 
 Comprueba que los bridges existen (`ip -br link`) y que el `volid` de la ISO es
@@ -385,8 +418,24 @@ pfctl -sr
 
 Y desde un cliente de la LAN: DHCP, DNS y acceso a los servicios publicados.
 
+### 6.6 Servidores de apoyo en LXC
+
+pfSense **no puede ser LXC**. Si el profesor permite contenedores para los
+servidores, después de configurar pfSense:
+
+```bash
+./icd.sh p5 lxc create
+./icd.sh p5 lxc status
+```
+
+Crea `dmz-web` (DMZ), `intra-web`, `db` y `app` (LAN) con las IPs
+`192.168.50.11`, `192.168.100.11`, `.12` y `.13`. La base de datos solo acepta
+conexiones desde la IP de `app`. Si el enunciado cambia las redes, ajusta
+`P5_LAN_GW`, `P5_DMZ_GW`, las IPs y los bridges. Guía completa:
+[`CONTENEDORES.md`](CONTENEDORES.md).
+
 **Tiempo:** 25–30 min. **Manual:** instalación de pfSense y restauración del
-`config.xml`. **Automático:** VM, NICs y MAC.
+`config.xml`. **Automático:** VM, NICs, MAC y contenedores de apoyo.
 
 ---
 
@@ -416,14 +465,17 @@ capturar. Es mejor una práctica terminada y documentada que dos a medias.
 | Síntoma | Causa | Solución |
 |---|---|---|
 | `qm: command not found` | Estás en la VM, no en el host | Ejecuta P4/P5 en el host Proxmox. |
+| `pct: command not found` | Estás en la VM, no en el host | Ejecuta los LXC en el host Proxmox. |
 | `mdadm: no devices` | Discos mal escritos o no existen | `./icd.sh p2 detect` y revisa la lista. |
+| El script rechaza un disco | Es el disco del sistema, una partición o tiene firmas | Elige otro disco; no fuerces sin estar seguro. |
 | `p3` mide el disco del sistema | `/mnt/raid5` no está montado | Monta la matriz o ajusta `--target`. |
 | `apt-get` no descarga | No hay internet en el laboratorio | Usa plantilla con paquetes o `--no-apt`. |
 | Dos VM con la misma IP | Clon sin cambiar la red | Cambia la IP y reinicia `networking`. |
 | `502 Bad Gateway` | `icdapp` no arranca | `systemctl status icdapp`, `journalctl -u icdapp`. |
 | La BD acepta conexiones de `web2` | Usuario `'icd'@'%'` o sin restricción | Crea `'icd'@'192.168.50.13'` y borra el comodín. |
 | pfSense sin IP en WAN | MAC incorrecta o bridge equivocado | Revisa `net0`, renueva la WAN. |
-| El ZIP no trae `config.env` | Está en `.gitignore` | Cópialo del `.example`. |
+| El LXC no arranca | Plantilla, storage o bridge incorrectos | `pveam list local`, `pvesm status`, `ip -br link`. |
+| El ZIP o el USB no trae `config.env` | Está en `.gitignore` | Cópialo del `.example`. |
 
 ---
 
@@ -448,6 +500,7 @@ capturar. Es mejor una práctica terminada y documentada que dos a medias.
 
 # P4 (host)
 ./icd.sh p4 todo
+./icd.sh p4 lxc create
 # P4 (dentro de cada VM)
 sudo ./p4/servicios.sh web1
 sudo ./p4/servicios.sh web2
@@ -456,6 +509,7 @@ sudo ./p4/servicios.sh app
 # P5 (host)
 ./icd.sh p5 mac BC:24:11:0A:1B:2C 7
 ./icd.sh p5 todo --mac-base BC:24:11:0A:1B:2C --pc 7
+./icd.sh p5 lxc create
 ```
 
 ---
@@ -465,7 +519,18 @@ sudo ./p4/servicios.sh app
 - **P1:** la topología, el cableado y el DHCP/DNS de Packet Tracer.
 - **P2:** elegir los discos correctos y decidir la distribución activos/repuesto.
 - **P3:** interpretar los resultados.
-- **P4:** instalar Debian o clonar la plantilla y configurar la red.
-- **P5:** instalar pfSense y restaurar el `config.xml`.
+- **P4:** instalar Debian o clonar la plantilla y configurar la red; si usas
+  LXC, descargar la plantilla Debian 12.
+- **P5:** instalar pfSense, restaurar el `config.xml` y ajustar reglas/NAT.
 - **Todos:** adaptar los valores al enunciado del examen. Los scripts no adivinan
   las IPs, los discos ni las MAC.
+
+---
+
+## 11. Documentos de entrega
+
+- [`ENTORNO_EXAMEN.md`](ENTORNO_EXAMEN.md): VM Debian, Proxmox y discos reales.
+- [`CONTENEDORES.md`](CONTENEDORES.md): LXC de P4 y P5.
+- [`VIDEO_DEMO.md`](VIDEO_DEMO.md): qué mostrar y cómo grabar la demostración.
+- [`CHECKLIST_EXAMEN.md`](CHECKLIST_EXAMEN.md): lista de comprobación.
+- [`../README.md`](../README.md): índice general y preparación del USB.

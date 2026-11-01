@@ -63,6 +63,30 @@ pfctl -sr        # reglas de filtrado
 
 Y desde un cliente de la LAN: DNS, DHCP y acceso a los servicios publicados.
 
+## Contenedores LXC de apoyo
+
+pfSense **no puede ser un contenedor LXC**: es una VM FreeBSD. Los servidores
+web, la base de datos y Flask sí pueden ir en LXC para no montar cuatro Debian
+desde cero.
+
+```bash
+# En el host Proxmox, después de crear y configurar la VM pfSense
+./icd.sh p5 lxc create
+./icd.sh p5 lxc status
+```
+
+El diseño por defecto usa:
+
+| LXC | IP | Bridge | Servicio |
+|---|---|---|---|
+| `dmz-web` | `192.168.50.11` | `vmbr2` (DMZ) | Apache |
+| `intra-web` | `192.168.100.11` | `vmbr1` (LAN) | Apache |
+| `db` | `192.168.100.12` | `vmbr1` (LAN) | MariaDB |
+| `app` | `192.168.100.13` | `vmbr1` (LAN) | Flask + nginx |
+
+Ajusta `P5_LAN_GW`, `P5_DMZ_GW`, las IPs y los bridges si el enunciado cambia
+las redes. La guía completa está en [`docs/CONTENEDORES.md`](../docs/CONTENEDORES.md).
+
 ## Errores típicos
 
 - **La WAN no obtiene IP**: MAC incorrecta, bridge equivocado o el DHCP del

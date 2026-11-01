@@ -17,7 +17,9 @@ Prácticas:
   p3        Prestaciones con fio/dd.   Ej.: ./icd.sh p3 todo
   p4        VM en Proxmox.             Ej.: ./icd.sh p4 todo
             Servicios dentro de la VM:  ./icd.sh p4 servicios app
+            Contenedores LXC:           ./icd.sh p4 lxc create
   p5        pfSense en Proxmox.        Ej.: ./icd.sh p5 todo --mac-base MAC --pc 7
+            Contenedores de apoyo:      ./icd.sh p5 lxc create
 
 Cada script tiene su propia ayuda: ./icd.sh p2 help
 Guía paso a paso: docs/GUIA_EJECUCION.md
@@ -52,6 +54,7 @@ case "${1:-}" in
   p4|vms)
     shift
     case "${1:-}" in
+      lxc|contenedores) shift; exec bash "$HERE/contenedores/p4/lxc.sh" "$@" ;;
       servicios) shift; exec bash "$HERE/p4/servicios.sh" "$@" ;;
       todo|auto) shift; exec bash "$HERE/p4/todo.sh" "$@" ;;
     esac
@@ -59,10 +62,10 @@ case "${1:-}" in
     ;;
   p5|pfsense)
     shift
-    if [[ ${1:-} == todo || ${1:-} == auto ]]; then
-      shift
-      exec bash "$HERE/p5/todo.sh" "$@"
-    fi
+    case "${1:-}" in
+      lxc|contenedores) shift; exec bash "$HERE/contenedores/p5/lxc.sh" "$@" ;;
+      todo|auto) shift; exec bash "$HERE/p5/todo.sh" "$@" ;;
+    esac
     exec bash "$HERE/p5/pfsense.sh" "$@"
     ;;
   -h|--help|help|"")

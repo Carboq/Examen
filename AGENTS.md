@@ -16,8 +16,9 @@ Hay que distinguir cuatro sitios:
 | Sitio | Qué se ejecuta allí | ¿OpenCode? |
 |---|---|---|
 | VM Debian 12 de trabajo | Editar el repo, P2/P3, generar comandos y entrar por SSH en las demás máquinas. | **Sí, aquí se instala.** |
-| Host Proxmox VE 8 | `qm` para crear y arrancar las VM de P4/P5. | **No recomendado.** |
+| Host Proxmox VE 8 | `qm` para VM, `pct`/`pveam` para LXC, y `vzdump`. | **No recomendado.** |
 | VM `web1`, `web2` y `app` | `p4/servicios.sh` dentro de cada Debian. | Opcional, por SSH. |
+| LXC de P4/P5 | Servicios de P4 y servidores de apoyo de P5. | Opcional, por SSH. |
 | Windows + Packet Tracer | P1 y edición/descarga del repo. | Solo Git Bash para generar P1. |
 
 Proxmox VE 8 está basado en Debian, pero **no es un puesto de trabajo**: no
@@ -25,8 +26,9 @@ conviene instalar OpenCode, Python, Node ni herramientas de desarrollo en el
 hipervisor. Si se instala ahí, hay que borrarlo al terminar y no dejar el
 `PATH` modificado.
 
-La VM Debian de trabajo no puede ejecutar `qm` por sí sola. Para P4/P5 hay que
-entrar en el host Proxmox por SSH o copiar los comandos y ejecutarlos allí.
+La VM Debian de trabajo no puede ejecutar `qm` ni `pct` por sí sola. Para P4/P5
+hay que entrar en el host Proxmox por SSH o copiar los comandos y ejecutarlos
+allí.
 
 ## 1. Antes de abrir OpenCode
 
@@ -76,6 +78,11 @@ ficheros `.example`.
 | `docs/GUIA_EJECUCION.md` | Guía paso a paso de P1–P5: dónde se ejecuta cada cosa, orden, validación y errores típicos. |
 | `docs/GUIONES.md` | Índice de los guiones oficiales P1–P5 y enlaces a los PDFs de `docs/guiones/`. |
 | `docs/CREAR_VM_PROXMOX.md` | Crear una VM en Proxmox por GUI o `qm`, conectarla a `vmbr0`, asignar MAC y comprobar internet. |
+| `docs/ENTORNO_EXAMEN.md` | VM Debian sobre Proxmox, discos reales de P2/P3 y separación host/VM. |
+| `docs/CONTENEDORES.md` | LXC de P4 y P5; pfSense sigue siendo una VM. |
+| `docs/VIDEO_DEMO.md` | Guion de la demostración en vídeo: qué mostrar y en qué orden. |
+| `docs/CHECKLIST_EXAMEN.md` | Lista de comprobación antes, durante y después del examen. |
+| `contenedores/` | Scripts LXC para P4 y P5. |
 | `docs/simulacros/P4.md` | Enunciado y plan de 90 minutos para una variante de P4. |
 | `p1/LEEME.md` | P1 en Packet Tracer: topología, configuración y comprobaciones manuales. |
 | `p5/LEEME.md` | P5: crear la VM de pfSense, instalar, restaurar `config.xml` y ajustar interfaces. |
@@ -88,13 +95,18 @@ ficheros `.example`.
 1. `README.md` — para entender qué automatiza cada práctica.
 2. `docs/GUIA_EJECUCION.md` — para saber **dónde** se ejecuta cada comando.
 3. `docs/CREAR_VM_PROXMOX.md` — si hay que crear la VM o arreglar su red.
-4. `docs/GUIONES.md` — índice de los guiones oficiales en PDF.
-5. El documento de la práctica que se vaya a hacer:
+4. `docs/ENTORNO_EXAMEN.md` — si vas a tocar discos reales o preparar P2/P3.
+5. `docs/CONTENEDORES.md` — si vas a usar LXC para P4/P5.
+6. `docs/GUIONES.md` — índice de los guiones oficiales en PDF.
+7. `docs/VIDEO_DEMO.md` y `docs/CHECKLIST_EXAMEN.md` — para la entrega.
+8. El documento de la práctica que se vaya a hacer:
    - P1: `p1/LEEME.md`
-   - P2 y P3: sección correspondiente de `docs/GUIA_EJECUCION.md`
-   - P4: `docs/simulacros/P4.md` y `docs/GUIA_EJECUCION.md`
-   - P5: `p5/LEEME.md` y `docs/GUIA_EJECUCION.md`
-6. Los `.example` antes de crear la configuración local.
+   - P2 y P3: sección correspondiente de `docs/GUIA_EJECUCION.md` y
+     `docs/ENTORNO_EXAMEN.md`
+   - P4: `docs/simulacros/P4.md`, `docs/CONTENEDORES.md` y
+     `docs/GUIA_EJECUCION.md`
+   - P5: `p5/LEEME.md`, `docs/CONTENEDORES.md` y `docs/GUIA_EJECUCION.md`
+9. Los `.example` antes de crear la configuración local.
 
 ## 4. Reglas de trabajo para OpenCode
 
@@ -103,11 +115,17 @@ ficheros `.example`.
 - **OpenCode se instala en la VM Debian de trabajo, no en el host Proxmox.**
   El hipervisor solo debe ejecutar `qm`; si se instala allí, hay que limpiarlo.
 - **P2 y P3 van dentro de una VM Debian**, nunca en el host Proxmox ni en
-  Windows.
-- **P4 y P5 se crean desde el host Proxmox** con `qm`; `p4/servicios.sh` se
-  ejecuta **dentro** de cada VM Debian, no en el host.
-- **No ejecutar `qm` en la VM Debian de trabajo.** No existe ahí: hay que entrar
-  al host Proxmox por SSH o copiar el comando y ejecutarlo en el host.
+  Windows. En el examen los discos son reales y se conectan a la VM desde
+  Proxmox; el script rechaza el disco del sistema.
+- **P4 y P5 se crean desde el host Proxmox** con `qm` o con `pct` (LXC);
+  `p4/servicios.sh` se ejecuta **dentro** de cada VM o contenedor, no en el
+  host. pfSense sigue siendo una VM, no un LXC.
+- **No ejecutar `qm` ni `pct` en la VM Debian de trabajo.** No existen ahí: hay
+  que entrar al host Proxmox por SSH o copiar el comando y ejecutarlo en el
+  host.
+- **El USB es una copia de apoyo.** Si se usa, se copia la carpeta generada por
+  `tools/crear_entrega_usb.ps1`; no se edita el USB como si fuera el repo
+  principal.
 - **No inventar valores de laboratorio.** Leer `config.env`; si no existe,
   copiar `config.env.example` y preguntar antes de rellenarlo.
 - **No mezclar las memorias con los scripts.** Las memorias de P4/P5 usan
@@ -146,7 +164,9 @@ cp p4/vms.conf.example p4/vms.conf
 
 # 4. P4/P5: estos comandos van en el HOST PROXMOX, no en la VM Debian
 ./icd.sh p4 todo
+./icd.sh p4 lxc create
 ./icd.sh p5 todo --mac-base MAC --pc 7
+./icd.sh p5 lxc create
 ```
 
 Si OpenCode está en la VM Debian, para P4/P5 debe **generar los comandos y
@@ -159,8 +179,10 @@ Después:
 - P2: comprobar `cat /proc/mdstat` y el montaje.
 - P3: revisar la tabla de resultados de `fio`.
 - P4: entrar en `web1`, `web2` y `app` y ejecutar
-  `sudo ./p4/servicios.sh web1|web2|app` dentro de cada una.
-- P5: instalar pfSense, asignar WAN/LAN/DMZ y restaurar `config.xml`.
+  `sudo ./p4/servicios.sh web1|web2|app` dentro de cada una, o usar
+  `./icd.sh p4 lxc create`.
+- P5: instalar pfSense, asignar WAN/LAN/DMZ, restaurar `config.xml` y, si se
+  usan, crear los LXC de apoyo con `./icd.sh p5 lxc create`.
 
 ## 6. Prompts útiles
 
@@ -176,6 +198,12 @@ Después:
   cómo se revierte.»
 - «Para P4/P5, separa lo que va en el host Proxmox de lo que va dentro de la VM
   Debian. No mezcles los dos entornos.»
+- «Revisa `docs/ENTORNO_EXAMEN.md` y dime qué discos debo usar en P2 sin tocar
+  el disco del sistema. No ejecutes nada.»
+- «Genera los comandos LXC de P4, pero no los ejecutes; indica qué va en el host
+  y qué dentro del contenedor.»
+- «Convierte `docs/VIDEO_DEMO.md` en una lista de tomas para grabar la
+  demostración sin mostrar contraseñas.»
 - «No toques `git`; solo explica qué cambiarías y en qué archivo.»
 
 ## 7. Documentos que no están en GitHub

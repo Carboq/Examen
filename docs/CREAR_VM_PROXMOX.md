@@ -475,6 +475,10 @@ paquetes:
 No cambies la IP de servicio de `vmbr1` solo para tener internet: puedes romper
 la práctica.
 
+Si P2/P3 se hacen en esta VM con discos reales, añade los discos con `qm set` y
+comprueba dentro de la VM que aparecen. El procedimiento completo está en
+[`ENTORNO_EXAMEN.md`](ENTORNO_EXAMEN.md).
+
 ### P5
 
 pfSense usa tres redes:

@@ -49,6 +49,44 @@ norm_dev() {
   [[ $d == /dev/* ]] && printf '%s\n' "$d" || printf '/dev/%s\n' "$d"
 }
 
+# Devuelve el nombre del disco que contiene la raíz del sistema.
+# Ejemplos: sda, nvme0n1, vda. Sirve para no borrar el disco de la VM.
+root_disk_name() {
+  local src name
+  src=$(findmnt -n -o SOURCE / 2>/dev/null || true)
+  [[ -n $src ]] || return 1
+  # En btrfs, findmnt puede devolver /dev/sda2[/@]; quita el subvolumen.
+  src=${src%%\[*}
+
+  # Si / está en LVM, hay que subir hasta el disco físico.
+  name=$(lsblk -s -nlo NAME,TYPE "$src" 2>/dev/null \
+    | awk '$2 == "disk" { print $1; exit }')
+  if [[ -z $name ]]; then
+    name=$(lsblk -nlo PKNAME "$src" 2>/dev/null | head -n1 || true)
+  fi
+  [[ -n $name ]] || name=$(basename "$src")
+
+  printf '%s\n' "$name"
+}
+
+# Comprueba si el dispositivo es el disco del sistema.
+# Uso: is_root_disk /dev/sda
+is_root_disk() {
+  local d root real
+  root=$(root_disk_name) || return 1
+  real=$(readlink -f "$d" 2>/dev/null || printf '%s' "$d")
+  [[ $(basename "$real") == "$root" ]]
+}
+
+# Comprueba que es un disco completo, no una partición.
+# Uso: is_whole_disk /dev/sdb
+is_whole_disk() {
+  local d=$1 type
+  [[ -b $d ]] || return 1
+  type=$(lsblk -dn -o TYPE "$d" 2>/dev/null | tr -d '[:space:]')
+  [[ $type == disk ]]
+}
+
 # Comprueba que un disco se puede usar sin perder datos.
 # Uso: disk_is_free /dev/sdb
 disk_is_free() {
