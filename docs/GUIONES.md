@@ -23,6 +23,7 @@ repositorio.
 |---|---|---|
 | Evaluación de Prestaciones 7 | `examenes/7ptos_prestaciones/20261028_EvaluacionPrestaciones_7ptos.pdf` y `.docx` (local) | [GUIA_MANUAL.md](../examenes/7ptos_prestaciones/GUIA_MANUAL.md) |
 | Infraestructura Empresarial 5–10 | ZIP oficial del examen | Sin guía específica; ver [EXAMENES.md](EXAMENES.md) |
+| Modelo 00 resuelto | `examenes/modelos/20261020_PrimerParcialLaboratorio_modelo00.docx` | [LEEME.md](../examenes/modelos/LEEME.md) |
 
 > El ZIP oficial del examen **no contiene Packet Tracer**. La P1 del
 > repositorio no se usa en estos modelos.

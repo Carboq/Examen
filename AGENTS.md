@@ -86,6 +86,7 @@ ficheros `.example`.
 | `docs/simulacros/P4.md` | Enunciado y plan de 90 minutos para una variante de P4. |
 | `docs/EXAMENES.md` | Comparación de los modelos de examen del primer parcial. |
 | `examenes/7ptos_prestaciones/` | Guía manual, enunciado resumido y benchmark `dd` del examen de 7 puntos. |
+| `examenes/modelos/` | Modelo 00 resuelto de la primera parte (comandos Debian). |
 | `p1/LEEME.md` | P1 en Packet Tracer: topología, configuración y comprobaciones manuales. |
 | `p5/LEEME.md` | P5: crear la VM de pfSense, instalar, restaurar `config.xml` y ajustar interfaces. |
 | `config.env.example` | Valores de laboratorio: bridges, almacenamiento, ISO, VMID, MAC, discos. |

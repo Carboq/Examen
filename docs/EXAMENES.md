@@ -33,6 +33,11 @@ Scripts:
 - `bench_dd.sh`: benchmark con `dd`, genera `lectura.csv` y `escritura.csv`.
 - `verificar.sh`: comprueba montajes, RAID y CSV.
 
+También hay un modelo resuelto de la primera parte:
+
+- [`examenes/modelos/20261020_PrimerParcialLaboratorio_modelo00.docx`](../examenes/modelos/20261020_PrimerParcialLaboratorio_modelo00.docx)
+- [`examenes/modelos/LEEME.md`](../examenes/modelos/LEEME.md)
+
 ## 3. Comparación con las prácticas P1–P5
 
 | Examen | Piezas reutilizables | Diferencias importantes |

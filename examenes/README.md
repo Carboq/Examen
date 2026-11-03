@@ -14,6 +14,8 @@ El ZIP oficial `26_27_GIIROB-ICD.zip` contiene dos familias de examen:
 - [`7ptos_prestaciones/`](7ptos_prestaciones/) — **guía manual completa** del
   modelo de 7 puntos de Evaluación de Prestaciones, con el enunciado local y
   scripts de benchmark.
+- [`modelos/`](modelos/) — modelos de examen resueltos, empezando por
+  `20261020_PrimerParcialLaboratorio_modelo00.docx`.
 - [`../docs/EXAMENES.md`](../docs/EXAMENES.md) — comparación de las dos familias
   y criterios para elegir.
 - [`../docs/VIDEO_DEMO.md`](../docs/VIDEO_DEMO.md) — qué grabar, incluido el

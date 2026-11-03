@@ -17,6 +17,7 @@ Centros de Datos** (UPV). Reproduce con scripts los montajes de las prácticas
 | Hacer el examen de 7 puntos paso a paso | [`examenes/7ptos_prestaciones/GUIA_MANUAL.md`](examenes/7ptos_prestaciones/GUIA_MANUAL.md) |
 | Ver el enunciado resumido del 7 | [`examenes/7ptos_prestaciones/ENUNCIADO.md`](examenes/7ptos_prestaciones/ENUNCIADO.md) |
 | Ejecutar el benchmark del 7 | [`examenes/7ptos_prestaciones/bench_dd.sh`](examenes/7ptos_prestaciones/bench_dd.sh) |
+| Repasar el modelo 00 resuelto | [`examenes/modelos/20261020_PrimerParcialLaboratorio_modelo00.docx`](examenes/modelos/20261020_PrimerParcialLaboratorio_modelo00.docx) |
 | Grabar la demostración | [`docs/VIDEO_DEMO.md`](docs/VIDEO_DEMO.md) |
 | Revisar antes de entregar | [`docs/CHECKLIST_EXAMEN.md`](docs/CHECKLIST_EXAMEN.md) |
 | Ver el entorno real | [`docs/ENTORNO_EXAMEN.md`](docs/ENTORNO_EXAMEN.md) |
@@ -59,7 +60,8 @@ icd-examen/
 ├── p5/LEEME.md             instalación, restauración y ajuste
 ├── examenes/               material de los exámenes del primer parcial
 │   ├── README.md           índice y comparación de modelos
-│   └── 7ptos_prestaciones/ guía manual, enunciado y benchmark del 7
+│   ├── 7ptos_prestaciones/ guía manual, enunciado y benchmark del 7
+│   └── modelos/            modelos resueltos, incluido el modelo 00
 ├── contenedores/           LXC de Proxmox para P4 y P5
 │   ├── lib.sh              funciones comunes
 │   ├── p4/lxc.sh           web1, web2 y app en LXC
