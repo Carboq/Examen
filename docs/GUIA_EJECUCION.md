@@ -16,6 +16,12 @@ enunciado: si el profesor cambia una IP, un ID o una red, se cambia en
 >
 > Los guiones oficiales en PDF están en `docs/guiones/`; el índice, en
 > [`GUIONES.md`](GUIONES.md).
+>
+> **Si vas al examen de 7 puntos de Evaluación de Prestaciones**, no sigas esta
+> guía de prácticas: usa la guía específica
+> [`examenes/7ptos_prestaciones/GUIA_MANUAL.md`](../examenes/7ptos_prestaciones/GUIA_MANUAL.md).
+> El examen exige particiones, RAID 5 y benchmark con `dd`, no el `fio` de P3.
+> La comparación de modelos está en [`EXAMENES.md`](EXAMENES.md).
 
 ## 0. Dónde se ejecuta cada cosa
 
@@ -533,4 +539,7 @@ sudo ./p4/servicios.sh app
 - [`CONTENEDORES.md`](CONTENEDORES.md): LXC de P4 y P5.
 - [`VIDEO_DEMO.md`](VIDEO_DEMO.md): qué mostrar y cómo grabar la demostración.
 - [`CHECKLIST_EXAMEN.md`](CHECKLIST_EXAMEN.md): lista de comprobación.
+- [`EXAMENES.md`](EXAMENES.md): comparación de los modelos de examen.
+- [`../examenes/7ptos_prestaciones/GUIA_MANUAL.md`](../examenes/7ptos_prestaciones/GUIA_MANUAL.md):
+  guía manual del examen de 7 puntos de Prestaciones.
 - [`../README.md`](../README.md): índice general y preparación del USB.

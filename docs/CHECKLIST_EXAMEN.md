@@ -6,8 +6,8 @@
 ## 1. La noche anterior
 
 - [ ] El repositorio está actualizado en GitHub y en el USB.
-- [ ] El USB contiene `REPOSITORIO`, `GUIAS_PDF`, `OPENCODE`, `VIDEO` y
-  `CONTENEDORES`.
+- [ ] El USB contiene `REPOSITORIO`, `GUIAS_PDF`, `OPENCODE`, `VIDEO`,
+  `CONTENEDORES` y `EXAMENES`.
 - [ ] `config.env.example` está revisado; no se ha subido `config.env`.
 - [ ] `p4/vms.conf.example` y `p1/valores.env.example` están revisados.
 - [ ] Has exportado `p5/config.xml` de tu pfSense y lo has guardado en el USB
@@ -82,6 +82,8 @@
 
 ## 8. Vídeo
 
+> Si el vídeo es del examen de 7 puntos, usa la sección 10.
+
 - [ ] Se ven las cinco prácticas.
 - [ ] Se ve el entorno: Proxmox, VM Debian y contenedores.
 - [ ] Se entiende qué es automático y qué es manual.
@@ -97,3 +99,23 @@
 - [ ] El USB se expulsa de forma segura.
 - [ ] Tienes una copia del vídeo y del repositorio en otro sitio.
 - [ ] Has borrado OpenCode y sus datos si el equipo es compartido.
+
+## 10. Examen de 7 puntos: Prestaciones
+
+- [ ] La VM 700 existe, se llama `Debian<Apellido>` y tiene la MAC del anexo.
+- [ ] El portapapeles funciona (`spice-vdagent`).
+- [ ] Los 4 SSD y el HDD están mapeados y visibles en `lsblk`.
+- [ ] El disco del sistema está identificado y no se ha tocado.
+- [ ] Las tres primeras SSD tienen partición Linux RAID.
+- [ ] La cuarta SSD y el HDD tienen partición Linux filesystem.
+- [ ] La SSD y el HDD están formateados en `ext4`.
+- [ ] `/dev/md0` es un RAID 5 de tres particiones y está `clean`.
+- [ ] `/mnt/HDD`, `/mnt/SDD` y `/mnt/RAID` están montados.
+- [ ] `lectura.csv` y `escritura.csv` existen y tienen datos.
+- [ ] `resumen.txt` indica el mejor bloque de cada dispositivo.
+- [ ] El DOCX está completado con capturas y tablas.
+- [ ] El ZIP `<usuarioupvnet>.zip` contiene DOCX, capturas, CSV y script.
+- [ ] Se ha subido a Poliformat y copiado por `scp`.
+- [ ] Se han desmontado los dispositivos, parado el RAID y limpiado las
+      particiones.
+- [ ] El equipo se ha reiniciado sin bloquearse.

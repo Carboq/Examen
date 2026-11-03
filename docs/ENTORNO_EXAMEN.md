@@ -208,3 +208,16 @@ qm list
 - [ ] P4/P5 se ejecutan en el host Proxmox, no en la VM Debian.
 - [ ] pfSense sigue siendo una VM, no un contenedor.
 - [ ] No se muestran contraseñas, tokens ni `config.xml` en el vídeo.
+
+## 8. Examen de 7 puntos: Evaluación de Prestaciones
+
+El modelo de 7 puntos se hace en una **VM Debian clonada con ID 700**, no en el
+host Proxmox:
+
+- La VM 700 ve los 4 SSD y el HDD como discos reales pasados con `qm set`.
+- El disco del sistema de la VM suele ser `/dev/sda`; no se toca.
+- `fdisk`, `mkfs`, `mdadm` y `dd` se ejecutan dentro de la VM.
+- El benchmark genera `lectura.csv` y `escritura.csv`.
+
+Guía completa:
+[`examenes/7ptos_prestaciones/GUIA_MANUAL.md`](../examenes/7ptos_prestaciones/GUIA_MANUAL.md).

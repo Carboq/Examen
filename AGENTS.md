@@ -84,6 +84,8 @@ ficheros `.example`.
 | `docs/CHECKLIST_EXAMEN.md` | Lista de comprobación antes, durante y después del examen. |
 | `contenedores/` | Scripts LXC para P4 y P5. |
 | `docs/simulacros/P4.md` | Enunciado y plan de 90 minutos para una variante de P4. |
+| `docs/EXAMENES.md` | Comparación de los modelos de examen del primer parcial. |
+| `examenes/7ptos_prestaciones/` | Guía manual, enunciado resumido y benchmark `dd` del examen de 7 puntos. |
 | `p1/LEEME.md` | P1 en Packet Tracer: topología, configuración y comprobaciones manuales. |
 | `p5/LEEME.md` | P5: crear la VM de pfSense, instalar, restaurar `config.xml` y ajustar interfaces. |
 | `config.env.example` | Valores de laboratorio: bridges, almacenamiento, ISO, VMID, MAC, discos. |
@@ -99,19 +101,27 @@ ficheros `.example`.
 5. `docs/CONTENEDORES.md` — si vas a usar LXC para P4/P5.
 6. `docs/GUIONES.md` — índice de los guiones oficiales en PDF.
 7. `docs/VIDEO_DEMO.md` y `docs/CHECKLIST_EXAMEN.md` — para la entrega.
-8. El documento de la práctica que se vaya a hacer:
+8. Si vas al examen de 7 puntos:
+   `examenes/7ptos_prestaciones/GUIA_MANUAL.md` y `docs/EXAMENES.md`.
+9. El documento de la práctica que se vaya a hacer:
    - P1: `p1/LEEME.md`
    - P2 y P3: sección correspondiente de `docs/GUIA_EJECUCION.md` y
      `docs/ENTORNO_EXAMEN.md`
    - P4: `docs/simulacros/P4.md`, `docs/CONTENEDORES.md` y
      `docs/GUIA_EJECUCION.md`
    - P5: `p5/LEEME.md`, `docs/CONTENEDORES.md` y `docs/GUIA_EJECUCION.md`
-9. Los `.example` antes de crear la configuración local.
+10. Los `.example` antes de crear la configuración local.
 
 ## 4. Reglas de trabajo para OpenCode
 
 - **No ejecutar comandos destructivos sin confirmación expresa.** P2 borra
-  firmas de disco y `cleanup` desmonta y destruye la matriz.
+  firmas de disco y `cleanup` desmonta y destruye la matriz. En el examen de 7
+  puntos, `fdisk`, `mkfs`, `mdadm` y `wipefs` también son destructivos: leer
+  [`examenes/7ptos_prestaciones/GUIA_MANUAL.md`](examenes/7ptos_prestaciones/GUIA_MANUAL.md)
+  y confirmar las letras de disco antes de ejecutar.
+- **Para el examen de 7 puntos, OpenCode trabaja dentro de la VM Debian 700**
+  con los discos reales ya mapeados. `qm` se ejecuta en el host Proxmox; el
+  benchmark `dd` se ejecuta dentro de la VM. No mezclar los dos entornos.
 - **OpenCode se instala en la VM Debian de trabajo, no en el host Proxmox.**
   El hipervisor solo debe ejecutar `qm`; si se instala allí, hay que limpiarlo.
 - **P2 y P3 van dentro de una VM Debian**, nunca en el host Proxmox ni en
@@ -204,6 +214,12 @@ Después:
   y qué dentro del contenedor.»
 - «Convierte `docs/VIDEO_DEMO.md` en una lista de tomas para grabar la
   demostración sin mostrar contraseñas.»
+- «Para el examen de 7 puntos de Prestaciones, lee
+  `examenes/7ptos_prestaciones/GUIA_MANUAL.md` y dime en qué orden ejecuto los
+  comandos. No ejecutes `fdisk`, `mdadm` ni `mkfs` sin que yo confirme los
+  discos.»
+- «Comprueba que `/mnt/HDD`, `/mnt/SDD` y `/mnt/RAID` son puntos de montaje y
+  ejecuta el benchmark `dd` del examen de 7 puntos.»
 - «No toques `git`; solo explica qué cambiarías y en qué archivo.»
 
 ## 7. Documentos que no están en GitHub

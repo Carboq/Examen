@@ -8,12 +8,26 @@ Centros de Datos** (UPV). Reproduce con scripts los montajes de las prácticas
 > puntos de partida: lee el enunciado, ajusta `config.env` y revisa la lista de
 > discos antes de ejecutar nada.
 
+## Mapa rápido
+
+| Quiero... | Fichero |
+|---|---|
+| Instalar y usar OpenCode | [`AGENTS.md`](AGENTS.md), sección 1; en el USB, `OPENCODE/LEEME.md` |
+| Ver qué examen elegir | [`docs/EXAMENES.md`](docs/EXAMENES.md) |
+| Hacer el examen de 7 puntos paso a paso | [`examenes/7ptos_prestaciones/GUIA_MANUAL.md`](examenes/7ptos_prestaciones/GUIA_MANUAL.md) |
+| Ver el enunciado resumido del 7 | [`examenes/7ptos_prestaciones/ENUNCIADO.md`](examenes/7ptos_prestaciones/ENUNCIADO.md) |
+| Ejecutar el benchmark del 7 | [`examenes/7ptos_prestaciones/bench_dd.sh`](examenes/7ptos_prestaciones/bench_dd.sh) |
+| Grabar la demostración | [`docs/VIDEO_DEMO.md`](docs/VIDEO_DEMO.md) |
+| Revisar antes de entregar | [`docs/CHECKLIST_EXAMEN.md`](docs/CHECKLIST_EXAMEN.md) |
+| Ver el entorno real | [`docs/ENTORNO_EXAMEN.md`](docs/ENTORNO_EXAMEN.md) |
+
 ## Requisitos
 
 - **Proxmox VE 8** en el host, para P4 y P5.
 - **Debian 12** dentro de la MV, para P2 y P3.
 - **pfSense 2.7** para P5.
-- `bash`, `lsblk`, `mdadm`, `wipefs` (P2); `fio` (P3); `qm` (P4/P5).
+- `bash`, `lsblk`, `mdadm`, `wipefs` (P2); `fio` (P3); `dd` (examen de 7
+  puntos); `qm` (P4/P5).
 - Para los contenedores: `pct`, `pveam` y una plantilla Debian 12.
 - Los discos de P2/P3 son **discos reales** conectados a la VM; ver
   [`docs/ENTORNO_EXAMEN.md`](docs/ENTORNO_EXAMEN.md).
@@ -43,6 +57,9 @@ icd-examen/
 ├── p5/pfsense.sh           VM de pfSense con 3 NIC y MAC reservada
 ├── p5/todo.sh              calcula la MAC, crea y arranca la VM
 ├── p5/LEEME.md             instalación, restauración y ajuste
+├── examenes/               material de los exámenes del primer parcial
+│   ├── README.md           índice y comparación de modelos
+│   └── 7ptos_prestaciones/ guía manual, enunciado y benchmark del 7
 ├── contenedores/           LXC de Proxmox para P4 y P5
 │   ├── lib.sh              funciones comunes
 │   ├── p4/lxc.sh           web1, web2 y app en LXC
@@ -50,6 +67,7 @@ icd-examen/
 ├── tools/                  utilidades para preparar la entrega
 │   └── crear_entrega_usb.ps1
 ├── docs/GUIONES.md         índice de los guiones oficiales
+├── docs/EXAMENES.md        guía comparativa de los modelos de examen
 ├── docs/guiones/           PDFs oficiales de las prácticas 1–5
 ├── docs/GUIA_EJECUCION.md   guía paso a paso de las cinco prácticas
 ├── docs/CREAR_VM_PROXMOX.md crear una VM y conectarla a la red
@@ -99,6 +117,31 @@ Los guiones oficiales en PDF de P1–P5 están en
 repositorio de cada práctica. Son material docente: se incluyen para uso
 académico y no se publican credenciales del host Proxmox.
 
+## Exámenes del primer parcial
+
+El ZIP oficial del examen **no contiene Packet Tracer**. Tiene dos familias:
+Evaluación de Prestaciones e Infraestructura Empresarial. La comparación está
+en [`docs/EXAMENES.md`](docs/EXAMENES.md).
+
+El modelo preparado es **Evaluación de Prestaciones de 7 puntos**:
+
+- [`examenes/7ptos_prestaciones/LEEME.md`](examenes/7ptos_prestaciones/LEEME.md)
+- [`examenes/7ptos_prestaciones/GUIA_MANUAL.md`](examenes/7ptos_prestaciones/GUIA_MANUAL.md)
+- [`examenes/7ptos_prestaciones/ENUNCIADO.md`](examenes/7ptos_prestaciones/ENUNCIADO.md)
+
+Dentro de la VM Debian, con HDD, SSD y RAID montados:
+
+```bash
+cd Examen/examenes/7ptos_prestaciones
+chmod +x bench_dd.sh verificar.sh
+sudo ./verificar.sh
+sudo ./bench_dd.sh --out resultados
+cat resultados/resumen.txt
+```
+
+El PDF y el DOCX oficiales se guardan en esa carpeta en local, pero no se
+suben a GitHub: el documento incluye credenciales del laboratorio.
+
 ## OpenCode
 
 La guía para instalar y usar OpenCode en el laboratorio está en
@@ -135,6 +178,8 @@ repositorio. Incluye:
 - la guía de OpenCode;
 - el guion del vídeo;
 - la documentación de discos reales y contenedores;
+- la carpeta `EXAMENES` con la guía manual, el enunciado y los scripts del
+  examen de 7 puntos;
 - una lista de comprobación para el examen.
 
 El USB no sustituye a GitHub: si cambias algo, vuelve a generar la carpeta.
@@ -156,7 +201,9 @@ La guía completa, con el orden, las comprobaciones y los errores típicos, est�
 en [`docs/GUIA_EJECUCION.md`](docs/GUIA_EJECUCION.md). Para el entorno real y
 los discos, consulta [`docs/ENTORNO_EXAMEN.md`](docs/ENTORNO_EXAMEN.md); para
 los contenedores, [`docs/CONTENEDORES.md`](docs/CONTENEDORES.md); para grabar
-la demostración, [`docs/VIDEO_DEMO.md`](docs/VIDEO_DEMO.md).
+la demostración, [`docs/VIDEO_DEMO.md`](docs/VIDEO_DEMO.md); para el examen de
+7 puntos, [`examenes/7ptos_prestaciones/GUIA_MANUAL.md`](examenes/7ptos_prestaciones/GUIA_MANUAL.md)
+y [`docs/EXAMENES.md`](docs/EXAMENES.md).
 
 ## Qué automatiza cada práctica
 
@@ -214,6 +261,7 @@ clonar plantillas. La guía y las variables están en
 | P5 pfSense | 20–25 min | 25–30 min |
 | P1 Packet Tracer | 30–35 min | 35–45 min |
 | P3 prestaciones | 25–30 min | 30–40 min |
+| Examen 7 Prestaciones | 45–60 min | 60–75 min |
 
 ## Orden recomendado
 

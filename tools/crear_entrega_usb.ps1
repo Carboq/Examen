@@ -57,7 +57,7 @@ try {
     New-Item -ItemType Directory -Path $repoCopy -Force | Out-Null
     Expand-Archive -LiteralPath $tmpZip -DestinationPath $repoCopy -Force
 
-    foreach ($d in @("GUIAS_PDF", "OPENCODE", "VIDEO", "CONTENEDORES", "ANEXOS", "P5_CONFIG")) {
+    foreach ($d in @("GUIAS_PDF", "OPENCODE", "VIDEO", "CONTENEDORES", "ANEXOS", "P5_CONFIG", "EXAMENES")) {
         New-Item -ItemType Directory -Path (Join-Path $Destino $d) -Force | Out-Null
     }
 
@@ -68,6 +68,9 @@ try {
     Copy-Item -Path (Join-Path $Repo "docs\ENTORNO_EXAMEN.md") -Destination (Join-Path $Destino "ANEXOS\ENTORNO_EXAMEN.md") -Force
     Copy-Item -Path (Join-Path $Repo "docs\CHECKLIST_EXAMEN.md") -Destination (Join-Path $Destino "CHECKLIST_EXAMEN.md") -Force
     Copy-Item -Path (Join-Path $Repo "contenedores\*") -Destination (Join-Path $Destino "CONTENEDORES") -Recurse -Force
+    Copy-Item -Path (Join-Path $Repo "docs\EXAMENES.md") -Destination (Join-Path $Destino "EXAMENES\GUIA_EXAMENES.md") -Force
+    Copy-Item -Path (Join-Path $Repo "examenes\README.md") -Destination (Join-Path $Destino "EXAMENES\README.md") -Force
+    Copy-Item -Path (Join-Path $Repo "examenes\7ptos_prestaciones\*") -Destination (Join-Path $Destino "EXAMENES") -Force
 
     $p5cfg = Join-Path $Repo "p5\config.xml"
     if (Test-Path $p5cfg) {
@@ -110,6 +113,7 @@ sustituye al repositorio de GitHub: es una copia de apoyo.
 | `CONTENEDORES/` | Guía y scripts LXC de P4 y P5. |
 | `ANEXOS/` | Entorno real y discos reales. |
 | `P5_CONFIG/` | Sitio para guardar el `config.xml` de pfSense. |
+| `EXAMENES/` | Guía manual, enunciado, DOCX/PDF y scripts del examen de 7 puntos. |
 | `CHECKLIST_EXAMEN.md` | Lista de comprobación antes/durante/después. |
 
 ## Primeros pasos
@@ -129,7 +133,9 @@ sustituye al repositorio de GitHub: es una copia de apoyo.
 5. Lee `docs/GUIA_EJECUCION.md` y `docs/ENTORNO_EXAMEN.md`.
 6. Si vas a usar LXC, descarga la plantilla Debian 12 y sigue
    `docs/CONTENEDORES.md`.
-7. Para el vídeo, sigue `VIDEO/GUION_VIDEO.md`.
+7. Para el examen de 7 puntos, abre `EXAMENES/GUIA_MANUAL.md`; el enunciado y
+   el DOCX oficial están en la misma carpeta.
+8. Para el vídeo, sigue `VIDEO/GUION_VIDEO.md`.
 
 ## Avisos
 

@@ -7,3 +7,6 @@ p1/out/
 p5/config.xml
 p3/resultados/
 p3/raw/
+examenes/7ptos_prestaciones/resultados/
+examenes/7ptos_prestaciones/*.pdf
+examenes/7ptos_prestaciones/*.docx

@@ -3,6 +3,10 @@
 > Objetivo: demostrar en **8–12 minutos** que las prácticas funcionan y que
 > sabes explicar qué se ha hecho. No es un tutorial de instalación: es una
 > demostración de resultados.
+>
+> **Si vas a grabar el examen de 7 puntos de Evaluación de Prestaciones**, salta
+> a la [sección 7](#7-examen-de-7-puntos-prestaciones). El vídeo de las
+> prácticas P1–P5 no sirve para ese examen.
 
 ## 1. Antes de grabar
 
@@ -341,3 +345,95 @@ Si el profesor limita el tiempo:
 - [ ] El vídeo tiene un nombre claro: `Apellido_Nombre_ICD_Demo.mp4`.
 - [ ] Guarda una copia en el USB y otra en la nube.
 - [ ] Comprueba que el vídeo se reproduce en otro equipo.
+
+## 7. Examen de 7 puntos: Prestaciones
+
+Este bloque sustituye al vídeo de P1–P5 si el examen elegido es el de
+**Evaluación de Prestaciones de 7 puntos**. Duración objetivo: **5–7 minutos**.
+Lo importante es que se vean **sistemas reales**, no solo una terminal: la VM
+700 en Proxmox, los discos con modelo/serie, el RAID, los montajes y el
+benchmark.
+
+### 7.1. Antes de grabar
+
+- [ ] La VM 700 está creada, arrancada y con red.
+- [ ] Los cuatro SSD y el HDD están mapeados y visibles en `lsblk`.
+- [ ] `/mnt/HDD`, `/mnt/SDD` y `/mnt/RAID` están montados.
+- [ ] `/dev/md0` está activo y `clean`.
+- [ ] `lectura.csv` y `escritura.csv` existen en `resultados/`.
+- [ ] La terminal tiene letra grande y no muestra credenciales.
+- [ ] La ventana de Proxmox no muestra la contraseña del host.
+
+### 7.2. Tomas
+
+| Minuto | Qué se muestra |
+|---:|---|
+| 0:00–0:30 | Presentación: nombre, asignatura y “examen de 7 puntos, Evaluación de Prestaciones”. |
+| 0:30–1:15 | Proxmox: VM 700, nombre, hardware y los discos mapeados. |
+| 1:15–2:00 | Dentro de la VM: `lsblk` con modelo/serie y `findmnt` del sistema. |
+| 2:00–2:45 | `fdisk -l` de las tres particiones RAID y de la SSD/HDD. |
+| 2:45–3:30 | `mdadm --detail /dev/md0`, `/proc/mdstat` y `df -h` de los tres montajes. |
+| 3:30–4:30 | Ejecución corta de `bench_dd.sh` o de un `dd` de escritura/lectura. |
+| 4:30–5:30 | `lectura.csv`, `escritura.csv` y `resumen.txt`; explica el mejor bloque. |
+| 5:30–6:00 | Cierre: qué se ha montado y qué se entrega. |
+
+### 7.3. Comandos que deben salir
+
+En Proxmox:
+
+```bash
+qm config 700 | grep -E '^(name|scsi|net0)'
+```
+
+En la VM:
+
+```bash
+findmnt -n -o SOURCE /
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MODEL,SERIAL,MOUNTPOINT
+sudo fdisk -l /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf
+sudo mdadm --detail /dev/md0
+cat /proc/mdstat
+df -h /mnt/HDD /mnt/SDD /mnt/RAID
+```
+
+Benchmark:
+
+```bash
+cd /ruta/al/repositorio/Examen/examenes/7ptos_prestaciones
+sudo ./bench_dd.sh --out resultados
+cat resultados/resumen.txt
+```
+
+Si quieres enseñar una ejecución muy corta, haz solo un tamaño de bloque:
+
+```bash
+sudo ./bench_dd.sh --sizes "4k" --out resultados_demo
+```
+
+### 7.4. Qué decir
+
+> “La VM 700 está en Proxmox y ve discos reales, no discos virtuales del
+> sistema. Las tres primeras SSD tienen una partición Linux RAID; la cuarta SSD
+> y el HDD tienen una partición ext4. El RAID 5 está montado en `/mnt/RAID`, el
+> HDD en `/mnt/HDD` y la SSD en `/mnt/SDD`. El benchmark con `dd` genera
+> `lectura.csv` y `escritura.csv`, y el resumen indica el tamaño de bloque con
+> mayor tasa para cada dispositivo.”
+
+### 7.5. Qué no enseñar
+
+- La contraseña de Proxmox.
+- El contenido completo de `config.xml` o de ficheros con credenciales.
+- Seriales de discos de otro compañero.
+- Una matriz que no sea la del examen.
+
+### 7.6. Cierre
+
+```bash
+cat resultados/resumen.txt
+```
+
+Termina mostrando la tabla de conclusión del DOCX y di:
+
+> “Queda montado el RAID 5, montados los tres dispositivos y generados los dos
+> CSV. El siguiente paso es desmontar, parar el RAID y limpiar las particiones
+> según el anexo A.”
